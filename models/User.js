@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const {Model, DataTypes} = require('sequelize');
 const sequelize = require('../config/connection');
 
@@ -32,6 +33,20 @@ User.init(
         }
     },
     {
+        // function(s) to run before or after Sequelize functions are called 'hooks'
+        hooks: {
+            // beforeCreate: before sequelizer handles the data from browswer, perform this function
+            async beforeCreate(newUserData) {
+                // asynchronously wait on newUserData.password to be encrypted with 10 chars
+                newUserData.password = await bcrypt.hash(newUserData.password, 10);
+                // with encrypted password, return data back to sequelizer
+                return newUserData;
+            },
+            async beforeUpdate(updatedUserData) {
+                updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+                return updatedUserData;
+            }
+        },
         // table configuration options belows
         sequelize,
         // don't automaticaly create createdAt/updatedAt timestamp fields

@@ -6,27 +6,27 @@ router.get('/', (req, res) => {
     // findAll extends from Model: it queries all user table rows in the db (equivalent to SELECT * FROM users;)
     User.findAll({
         // protect password by not including it in the return data. Array bc it CAN return multiple values
-        attributes: {exclude: ['password']}
+        attributes: { exclude: ['password'] }
     })
-        .then(dbUserData => res.json(dbUserData))
-        .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-        });
+    .then(dbUserData => res.json(dbUserData))
+    .catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+    });
 });
 
 // get one row of user data
 router.get('/:id', (req, res) => {
     // findOne: it queries user table to find one row from the db (equiv to SELECT * FROM users where id = ?;)
     User.findOne({
-        attributes: {exclude: ['password']},
+        attributes: { exclude: ['password'] },
         where: {
-            id: req.params.id
+        id: req.params.id
         }
     })
     .then(dbUserData => {
-        if(!dbUserData) {
-            res.status(404).json({message: 'No user found with this id'});
+        if (!dbUserData) {
+            res.status(404).json({ message: 'No user found with this id' });
             return;
         }
         res.json(dbUserData);
@@ -46,28 +46,30 @@ router.post('/', (req, res) => {
         password: req.body.password
     })
     .then(dbUserData => res.json(dbUserData))
-    .catch(err => {
+        .catch(err => {
         console.log(err);
         res.status(500).json(err);
     });
 });
 
+
 // update an existing user in db
 router.put('/:id', (req, res) => {
     // update: it updates a row in users table (equiv to UPDATE users SET ?,?,? WHERE id = ?)
     User.update(req.body, {
+        individualHooks: true,
         where: {
-            id: req.params.id
+        id: req.params.id
         }
     })
     .then(dbUserData => {
-        if (!dbUserData[0]) {
-            res.status(404).json({message: 'No user found with this id'});
-            return;
-        }
-        res.json(dbUserData);
+    if (!dbUserData[0]) {
+        res.status(404).json({ message: 'No user found with this id' });
+        return;
+    }
+    res.json(dbUserData);
     })
-    .catch(err => {
+        .catch(err => {
         console.log(err);
         res.status(500).json(err);
     });
@@ -78,12 +80,12 @@ router.delete('/:id', (req, res) => {
     // destroy: it removes a row in users table
     User.destroy({
         where: {
-            id: req.params.id
+        id: req.params.id
         }
     })
     .then(dbUserData => {
         if (!dbUserData) {
-            res.status(404).json({message: 'No user found with this id'});
+            res.status(404).json({ message: 'No user found with this id' });
             return;
         }
         res.json(dbUserData);

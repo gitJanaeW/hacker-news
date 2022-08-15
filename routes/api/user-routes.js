@@ -1,0 +1,97 @@
+const router = require('express').Router();
+const {User} = require('../../models');
+
+// get all user data
+router.get('/', (req, res) => {
+    // findAll extends from Model: it queries all user table rows in the db (equivalent to SELECT * FROM users;)
+    User.findAll({
+        // protect password by not including it in the return data. Array bc it CAN return multiple values
+        attributes: {exclude: ['password']}
+    })
+        .then(dbUserData => res.json(dbUserData))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+
+// get one row of user data
+router.get('/:id', (req, res) => {
+    // findOne: it queries user table to find one row from the db (equiv to SELECT * FROM users where id = ?;)
+    User.findOne({
+        attributes: {exclude: ['password']},
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(dbUserData => {
+        if(!dbUserData) {
+            res.status(404).json({message: 'No user found with this id'});
+            return;
+        }
+        res.json(dbUserData);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
+
+// create a user to add to user data
+router.post('/', (req, res) => {
+    // create: it creates an row in the users table (equiv to INSERT INTO users (?) VALUES (?);)
+    User.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    })
+    .then(dbUserData => res.json(dbUserData))
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
+
+// update an existing user in db
+router.put('/:id', (req, res) => {
+    // update: it updates a row in users table (equiv to UPDATE users SET ?,?,? WHERE id = ?)
+    User.update(req.body, {
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(dbUserData => {
+        if (!dbUserData[0]) {
+            res.status(404).json({message: 'No user found with this id'});
+            return;
+        }
+        res.json(dbUserData);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
+
+// remove an existing user from db
+router.delete('/:id', (req, res) => {
+    // destroy: it removes a row in users table
+    User.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(dbUserData => {
+        if (!dbUserData) {
+            res.status(404).json({message: 'No user found with this id'});
+            return;
+        }
+        res.json(dbUserData);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
+
+module.exports = router;

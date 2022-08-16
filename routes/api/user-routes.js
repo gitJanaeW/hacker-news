@@ -52,6 +52,26 @@ router.post('/', (req, res) => {
     });
 });
 
+router.post('/login', (req, res) => {
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    })
+    .then(dbUserData => {
+        if (!dbUserData) {
+            res.status(400).json({message: 'Email address is invalid.'});
+            return;
+        }
+        // this will run the User instance method that bcrypt password check anf returns true or false
+        const validPassword = dbUserData.checkPassword(req.body.password);
+        if (!validPassword){
+            res.status(400).json({message: 'Password is invalid.'});
+            return;
+        }
+        res.json({user:dbUserData, message: 'Log in successful.'});
+    })
+});
 
 // update an existing user in db
 router.put('/:id', (req, res) => {

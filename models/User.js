@@ -3,7 +3,12 @@ const {Model, DataTypes} = require('sequelize');
 const sequelize = require('../config/connection');
 
 // user class that borrows all functionality from sequelize's Model class
-class User extends Model {}
+class User extends Model {
+    // instance method to check that individual User object in question (ie. this) has a password that matches
+    checkPassword(loginPw) {
+        return bcrypt.compareSync(loginPw, this.password);
+    }
+}
 
 // method to define table columns and configuration
 User.init(

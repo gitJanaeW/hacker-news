@@ -14,7 +14,7 @@ Post.init(
         },
         title: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         post_url: {
             type: DataTypes.STRING,
@@ -25,7 +25,6 @@ Post.init(
         },
         user_id: {
             type: DataTypes.INTEGER,
-            // grabs the integer from the User table, based on the user object's id
             references: {
                 model: 'user',
                 key: 'id'

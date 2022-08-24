@@ -1,5 +1,7 @@
 const path = require('path');
 const express = require('express');
+const session = require ('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const exphbs = require('express-handlebars');
 const hbs = exphbs.create({});
 const routes = require('./controllers');
@@ -19,6 +21,20 @@ app.set('view engine', 'handlebars');
 
 // turn on routes
 app.use(routes);
+
+// create session/connect session to our sequelize database
+const sess = {
+    secret: 'Super secret secret',
+    cookie: {},
+    resave: false,
+    saveUninitialized: true,
+    store: new SequelizeStore({
+      db: sequelize
+    })
+  };
+
+// start a session
+app.use(session(sess));
 
 // turn on connection to db and server (sequelize)
 // sync: connects our classes to the db tables || create db tables if none

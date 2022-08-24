@@ -103,6 +103,19 @@ router.post('/login', (req, res) => {
     });
 });
 
+router.post('/logout', (req, res) => {
+    if (req.session.loggedIn) {
+        // end/"destroy" the session
+        req.session.destroy(() => {
+            res.status(204).end();
+        });
+    }
+    else {
+        // send response that handles the condition of a user who is actually not logged in
+        res.status(400).end();
+    };
+});
+
 // update an existing user in db
 router.put('/:id', (req, res) => {
     // update: it updates a row in users table (equiv to UPDATE users SET ?,?,? WHERE id = ?)

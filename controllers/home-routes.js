@@ -5,7 +5,7 @@ const { Post, User, Comment, Vote } = require('../models');
 
 // get all posts for homepage
 router.get('/', (req, res) => {
-  console.log('======================');
+  console.log('======================\n', req.session);
   Post.findAll({
     attributes: [
       'id',
@@ -33,7 +33,6 @@ router.get('/', (req, res) => {
       // .get() is used to parse the data you wanted out of the Sequelize [Object] that will returned by dbPostData
       const posts = dbPostData.map(post => post.get({ plain: true }));
       // pass a single post object into the homepage template
-      //   console.log("Sending dbPostData[0] to 'homepage':", dbPostData)
       res.render('homepage', { posts });
     })
     .catch(err => {
@@ -43,6 +42,12 @@ router.get('/', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
+  // if a logged in user tries to go to the login page, redirect them to the homepage
+  if (req.session.loggedIn) {
+    res.redirect('/');
+    return;
+  }
+  // else, if a logged out user tries to go to the login page, render the login page
   res.render('login');
 });
 

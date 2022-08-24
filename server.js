@@ -10,18 +10,6 @@ const sequelize = require('./config/connection');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// express middleware
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-app.use(express.static(path.join(__dirname, 'public')));
-
-// express handlebars
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
-
-// turn on routes
-app.use(routes);
-
 // create session/connect session to our sequelize database
 const sess = {
     secret: 'Super secret secret',
@@ -35,6 +23,18 @@ const sess = {
 
 // start a session
 app.use(session(sess));
+
+// express middleware
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// express handlebars
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
+// turn on routes
+app.use(routes);
 
 // turn on connection to db and server (sequelize)
 // sync: connects our classes to the db tables || create db tables if none

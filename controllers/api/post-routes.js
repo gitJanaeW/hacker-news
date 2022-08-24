@@ -83,7 +83,7 @@ router.put('/upvote', (req, res) => {
   // if a session exists, put upvote
   if (req.session) {
     // pass session id along with all destructured properties on req.body
-    Post.upvote({...req.body, user_id: req.session.user_id})
+    Post.upvote({...req.body, user_id: req.session.user_id}, {Vote, Comment, User})
       .then(dbPostData => res.json(dbPostData))
       .catch(err => {
         console.log(err);

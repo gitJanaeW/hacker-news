@@ -34,7 +34,7 @@ async function loginFormHandler(event) {
     });
     if (response.ok) {
       // move to the '/' route
-      document.location.replace('/');
+      document.location.replace('/dashboard');
     } else {
       alert(response.statusText);
     }

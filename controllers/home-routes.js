@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
       // .get() is used to parse the data you wanted out of the Sequelize [Object] that will returned by dbPostData
       const posts = dbPostData.map(post => post.get({ plain: true }));
       // pass a single post object into the homepage template
-      res.render('homepage', { posts });
+      res.render('homepage', {posts, loggedIn: req.session.loggedIn});
     })
     .catch(err => {
       console.log(err);
@@ -91,7 +91,7 @@ router.get('/post/:id', (req, res) => {
       const post = dbPostData.get({ plain: true });
 
       // render the single-post file in handlebars
-      res.render('single-post', { post });
+      res.render('single-post', {post, loggedIn: req.session.loggedIn});
     })
     .catch(err => {
       console.log(err);

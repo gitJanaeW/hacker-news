@@ -7,7 +7,7 @@ const withAuth = require('../utils/auth');
 router.get('/', withAuth, (req, res) => {
     Post.findAll({
         where: {
-            user_id: req.session.id
+            user_id: req.session.user_id
         },
         attributes: [
             'id',
@@ -34,6 +34,7 @@ router.get('/', withAuth, (req, res) => {
     .then(dbPostData => {
         // serializedata so it doesn't appear as [Object] when read
         const posts = dbPostData.map(post => post.get({plain: true}));
+        console.log(dbPostData);
         // render the dashboard if a user is loggedIn 
         // (including the post information from the above Post.findAll so it can be used in dashboard.handlebars)
         res.render('dashboard', {posts, loggedIn: true});

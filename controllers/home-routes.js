@@ -31,6 +31,7 @@ router.get('/', (req, res) => {
     ]
   })
     .then(dbPostData => {
+      console.log("homepage postdata", dbPostData);
       // .get() is used to parse the data you wanted out of the Sequelize [Object] that will returned by dbPostData
       const posts = dbPostData.map(post => post.get({ plain: true }));
       // pass a single post object into the homepage template
